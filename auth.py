@@ -2,7 +2,7 @@ import os
 from datetime import timedelta, datetime, timezone
 import jwt
 from dotenv import load_dotenv
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, Depends
 
 load_dotenv()
 SECRET_KEY = os.getenv("JWT_SECRET")
@@ -43,3 +43,8 @@ def get_current_user(authorization: str | None = Header(default=None)):
         raise HTTPException(status_code=401, detail="Invalid user ID in token")
 
     return {"user_id": user_id, "role": role}
+
+def require_admin(current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    return current_user

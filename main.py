@@ -1,5 +1,5 @@
 from fastapi import(HTTPException, FastAPI, Depends)
-from auth import(create_access_token, get_current_user)
+from auth import(create_access_token, get_current_user, require_admin)
 from database import DBConnection
 from schema import RegisterRequest, LoginRequest, TokenResponse
 from hashing import hash_password, verify_password
@@ -38,3 +38,7 @@ def login_user(request: LoginRequest):
 @app.get("/me")
 def read_me(current_user: dict = Depends(get_current_user)):
     return current_user
+
+@app.get("/admin/ping")
+def admin_ping(current_user: dict = Depends(require_admin)):
+    return {"message": "admin ok", "user_id":current_user["user_id"]}
