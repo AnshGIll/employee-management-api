@@ -8,7 +8,7 @@ def test_admin_ping_employee_token_returns_403():
     body = response.json()
     assert body["detail"] == "Insufficient permissions"
 
-def test_admin_ping_employee_no_header_returns_401():
+def test_admin_ping_no_header_returns_401():
     response = client.get("/admin/ping")
     assert response.status_code == 401
     body = response.json()
