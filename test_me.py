@@ -37,3 +37,9 @@ def test_me_expired_token_returns_401():
     body = response.json()
     assert "detail" in body
     assert body["detail"] == "Invalid token"
+
+def test_me_lowercase_bearer_token_returns_200():
+    token = create_access_token(user_id=7, role="manager")
+    response = client.get("/me", headers={"Authorization": f"bearer {token}"})
+    assert response.status_code == 200
+    assert response.json() == {"user_id": 7, "role": "manager"}

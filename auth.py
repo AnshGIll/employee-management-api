@@ -23,7 +23,7 @@ def get_current_user(authorization: str | None = Header(default=None)):
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     parts = authorization.split(" ")
-    if len(parts) != 2 or parts[0] != "Bearer":
+    if len(parts) != 2 or parts[0].lower() != "bearer":
         raise HTTPException(status_code=401, detail="Invalid authorization header format")
     
     token = parts[1]
