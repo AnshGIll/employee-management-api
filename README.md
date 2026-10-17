@@ -4,6 +4,23 @@ A small REST API built with **FastAPI** and **PostgreSQL**. Users can register a
 
 I built it as a backend practice project to learn authentication, password hashing, request validation, database constraints and role-based access control (RBAC).
 
+## Live demo
+
+**API docs:** https://employee-management-api-qnsl.onrender.com/docs
+
+Runs on Render (free web service), with the database on Neon (PostgreSQL, Singapore region).
+
+> The free server stops after 15 minutes with no traffic. The next request starts it again, which takes about a minute; requests after that are fast.
+
+**Try it:**
+1. `POST /register` with your own email and password.
+2. `POST /login` to get an access token.
+3. Call a protected route with the token:
+
+```bash
+curl -H "Authorization: Bearer <access_token>" https://employee-management-api-qnsl.onrender.com/me
+```
+
 ## Tech stack
 
 | Part | Tool | Version |
@@ -16,8 +33,9 @@ I built it as a backend practice project to learn authentication, password hashi
 | Tokens | PyJWT | 2.13.0 |
 | Settings | python-dotenv | 1.2.3 |
 | Tests | pytest + httpx | 9.1.1 / 0.28.1 |
+| Hosting | Render (app) + Neon (PostgreSQL) | free plans |
 
-Developed on Python 3.13 (needs Python 3.10 or newer).
+Developed on Python 3.13 (needs Python 3.10 or newer). `.python-version` pins 3.13 for the deployed server.
 
 ## Setup
 
@@ -57,7 +75,7 @@ The interactive docs open at http://127.0.0.1:8000/docs.
 
 ## Environment variables
 
-The app reads six values from `.env`:
+Locally, the app reads these values from `.env`:
 
 ```
 DB_HOST=localhost
@@ -72,7 +90,9 @@ Make a strong `JWT_SECRET` with:
 ```bash
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
-`database.py` reads the five `DB_` values. `auth.py` reads `JWT_SECRET` and stops at startup if it is missing.
+`auth.py` reads `JWT_SECRET` and stops at startup if it is missing.
+
+**`DATABASE_URL` (optional):** a full connection string, e.g. `postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require`. If it is set, `database.py` connects with it and ignores the five `DB_` values; if not, it uses the `DB_` values. The deployed app uses it to reach Neon. On Render, `DATABASE_URL` and `JWT_SECRET` are set in the service's Environment settings, not in a file.
 
 ## Endpoints
 
